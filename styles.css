@@ -1,0 +1,144 @@
+/* Basic styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  background-color: #f4f4f4;
+}
+
+header {
+  background: url("img/pikaso_edit_Candid-image-photography-natural-textures-highly-r.png") no-repeat center center/cover;
+  height: 100vh;
+  width: auto;
+  color: rgb(0, 0, 0);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-section h1 {
+  color: #252525;
+  font-size: 3em;
+  text-transform: uppercase;
+}
+
+.hero-section p {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+}
+
+.btn {
+  background: #ff9900;
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  font-size: 1.2em;
+  border-radius: 5px;
+}
+
+section {
+  padding: 50px;
+  text-align: center;
+  background-color: white;
+}
+
+.methane-challenge, .stories, .science, .solutions {
+  background: #e8f4f8;
+  padding: 50px;
+  margin-bottom: 20px;
+}
+
+.methane-challenge h2, .stories h2, .science h2, .solutions h2 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+}
+
+.story img, .science img, .solutions img {
+  width: 100%;
+  max-width: 500px;
+  margin-top: 20px;
+}
+
+.story {
+  margin-bottom: 50px;
+}
+
+.methane-stats {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap; /* Allows the boxes to wrap on smaller screens */
+  gap: 20px; /* Adds space between the boxes */
+  margin-top: 20px;
+}
+
+.methane-stats div {
+  background: #ffcc00;
+  padding: 20px;
+  border-radius: 10px;
+  width: 200px;
+  flex-grow: 1; /* Ensures that boxes take equal space */
+  text-align: center;
+}
+
+footer {
+  background-color: #333;
+  color: white;
+  padding: 20px 0;
+  text-align: center;
+}
+
+footer .social-links a {
+  color: white;
+  margin: 0 10px;
+  text-decoration: none;
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 768px) {
+  header {
+    height: 60vh; /* Reduce header size on mobile */
+  }
+
+  .hero-section h1 {
+    font-size: 2.5em;
+  }
+
+  .hero-section p {
+    font-size: 1.2em;
+  }
+
+  .methane-stats {
+    flex-direction: column; /* Stack the boxes vertically on smaller screens */
+    align-items: center;
+  }
+
+  .methane-stats div {
+    width: 100%; /* Make the boxes full width on small screens */
+    max-width: 300px;
+  }
+
+  .methane-challenge h2, .stories h2, .science h2, .solutions h2 {
+    font-size: 2em;
+  }
+}
+
+@media (max-width: 480px) {
+  .btn {
+    padding: 8px 16px;
+    font-size: 1em;
+  }
+
+  .methane-challenge, .stories, .science, .solutions {
+    padding: 20px;
+  }
+
+  .story img, .science img, .solutions img {
+    max-width: 100%;
+  }
+}

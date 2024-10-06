@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Global Methane Emissions Map</title>
+  
+  <!-- Include Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  
+  <style>
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f4f8;
+      color: #333;
+    }
+
+    /* Header Section */
+    header {
+      background-color: #2c3e50;
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 1.2em;
+      margin-bottom: 0;
+    }
+
+    /* Introduction Section */
+    .introduction-details {
+      padding: 40px 20px;
+      background-color: #ffffff;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin: 20px auto;
+      max-width: 800px;
+      border-radius: 8px;
+    }
+
+    .introduction-details h2 {
+      font-size: 2em;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+
+    .introduction-details p {
+      font-size: 1em;
+      line-height: 1.6;
+      color: #555;
+    }
+
+    /* Map Section */
+    #map {
+      width: 100%;
+      height: 70vh;
+      margin-top: 20px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Information Box */
+    .info {
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      font-size: 16px;
+      border-radius: 8px;
+      position: absolute;
+      top: 80px;
+      right: 20px;
+      z-index: 1000;
+      max-width: 300px;
+    }
+
+    .info h4 {
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+
+    /* Footer Section */
+    footer {
+      background-color: #2c3e50;
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+      position: relative;
+      bottom: 0;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    footer .footer-content {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    footer .footer-content p {
+      margin-bottom: 10px;
+      font-size: 0.9em;
+    }
+
+    footer .social-links a {
+      color: white;
+      margin: 0 10px;
+      text-decoration: none;
+      font-size: 1.2em;
+    }
+
+    footer .social-links a:hover {
+      color: #ff9900;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2em;
+      }
+
+      .introduction h2 {
+        font-size: 1.8em;
+      }
+
+      .info {
+        top: 60px;
+        right: 10px;
+        max-width: 250px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 1.5em;
+      }
+
+      .introduction {
+        padding: 20px 10px;
+      }
+
+      .introduction h2 {
+        font-size: 1.5em;
+      }
+
+      .info {
+        top: 50px;
+        right: 5px;
+        max-width: 200px;
+        font-size: 0.9em;
+      }
+
+      footer .footer-content p {
+        font-size: 0.8em;
+      }
+
+      footer .social-links a {
+        font-size: 1em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header Section -->
+  <header>
+    <h1>Global Methane Emission Data</h1>
+    <p>Understanding the Impact of Methane on Climate Change</p>
+  </header>
+
+  <!-- Introduction Section -->
+  <div class="introduction-details">
+    <h2>Why Methane Matters</h2>
+    <p>Methane is a potent greenhouse gas, significantly more effective than carbon dioxide at trapping heat in the atmosphere. Understanding and mitigating methane emissions is crucial for combating climate change and protecting our planet for future generations. Explore the map below to see how different countries contribute to methane emissions and the challenges they face.</p>
+  </div>
+
+  <!-- Map Section -->
+  <div id="map"></div>
+
+  <!-- Information Box -->
+  <div class="info">
+    <h4>Methane Emissions</h4>
+    <p>Hover over a country to see its methane emission issues.</p>
+  </div>
+
+  <!-- Footer Section -->
+  <footer>
+    <div class="footer-content">
+      <p>&copy; 2024 NASA Space Apps Challenge - Methane Tracker</p>
+      <p>Learn more about climate change and how you can help.</p>
+      <div class="social-links">
+        <a href="https://www.spaceappschallenge.org/nasa-space-apps-2024/find-a-team/spill-some/" target="_blank" aria-label="">By Team : Climate Guardians</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Include Leaflet.js via CDN -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  
+  <script>
+    // Methane Emissions Data for India, Canada, USA, Russia, and China
+    const methaneEmissions = {
+      "India": "India's methane emissions come primarily from agricultural activities, especially rice paddies and livestock.",
+      "Canada": "Canada's methane emissions come from the oil and gas industry, especially from the extraction of natural gas and oil sands.",
+      "USA": "The USA's methane emissions are largely from the oil and gas sector, landfills, and livestock production.",
+      "Russia": "Russia is one of the largest methane emitters, with significant contributions from oil and gas extraction and pipeline leaks.",
+      "China": "China's methane emissions are mainly due to coal mining, agriculture, and waste management."
+    };
+
+    // GeoJSON data for selected countries (India, Canada, USA, Russia, and China)
+    const countriesGeoJSON = {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "properties": { "name": "India" },
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [[[68.1766451354, 23.6919650335], [97.4025614766, 8.0883061684], [77.8374507995, 35.4940095078], [68.1766451354, 23.6919650335]]]
+          }
+        },
+        {
+          "type": "Feature",
+          "properties": { "name": "Canada" },
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [[[-141.0, 60.0], [-52.6, 83.0], [-52.6, 41.7], [-141.0, 60.0]]]
+          }
+        },
+        {
+          "type": "Feature",
+          "properties": { "name": "USA" },
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [[[-125.0, 50.0], [-66.9, 49.0], [-80.0, 24.5], [-125.0, 50.0]]]
+          }
+        },
+        {
+          "type": "Feature",
+          "properties": { "name": "Russia" },
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [[[-180.0, 82.0], [180.0, 41.2], [143.6, 50.0], [-180.0, 82.0]]]
+          }
+        },
+        {
+          "type": "Feature",
+          "properties": { "name": "China" },
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [[[73.6, 53.6], [134.8, 18.2], [122.0, 24.4], [73.6, 53.6]]]
+          }
+        }
+      ]
+    };
+
+    // Initialize the map
+    var map = L.map('map').setView([20, 0], 2); // Set initial map center and zoom
+
+    // Add OpenStreetMap tiles as the base layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Add a control to show information about a hovered country
+    var info = L.control();
+
+    info.onAdd = function () {
+      this._div = L.DomUtil.create('div', 'info');
+      this.update();
+      return this._div;
+    };
+
+    // Update the control box based on hovered country properties
+    info.update = function (props) {
+      this._div.innerHTML = '<h4>Methane Emissions</h4>' +  (props ?
+        '<b>' + props.name + '</b><br />' + props.methaneIssue
+        : 'Hover over a country');
+    };
+
+    info.addTo(map);
+
+    // Style the GeoJSON layer (countries)
+    function style(feature) {
+      return {
+        fillColor: '#ffcc00',
+        weight: 2,
+        opacity: 1,
+        color: 'white',
+        fillOpacity: 0.7
+      };
+    }
+
+    // Highlight country when hovered
+    function highlightFeature(e) {
+      var layer = e.target;
+
+      layer.setStyle({
+        weight: 3,
+        color: '#666',
+        fillOpacity: 0.9
+      });
+
+      if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+        layer.bringToFront();
+      }
+
+      // Update info with country details
+      info.update(layer.feature.properties);
+    }
+
+    // Reset highlight when mouse leaves
+    function resetHighlight(e) {
+      geojson.resetStyle(e.target);
+      info.update();
+    }
+
+    // Zoom to country when clicked
+    function zoomToFeature(e) {
+      map.fitBounds(e.target.getBounds());
+    }
+
+    // Event listeners for each country
+    function onEachFeature(feature, layer) {
+      layer.on({
+        mouseover: function (e) {
+          var countryName = feature.properties.name;
+          var methaneIssue = methaneEmissions[countryName] || "No data available";
+          info.update({ name: countryName, methaneIssue: methaneIssue });
+        },
+        mouseout: resetHighlight,
+        click: zoomToFeature
+      });
+    }
+
+    // Add GeoJSON layer to the map
+    var geojson = L.geoJson(countriesGeoJSON, {
+      style: style,
+      onEachFeature: onEachFeature
+    }).addTo(map);
+  </script>
+</body>
+</html>
